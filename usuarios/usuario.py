@@ -5,7 +5,7 @@ from usuarios.papeis import permissoes_do_papel
 
 class Usuario:
     # Construtor: guarda os dados da pessoa; começa como "ativo"
-    def _init_(self, matricula, nome, senha, papeis, supervisor=None):
+    def __init__(self, matricula, nome, senha, papeis, supervisor=None):
         self.matricula = matricula
         self.nome = nome
         self.senha = senha

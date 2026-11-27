@@ -12,7 +12,7 @@ CREDENCIAL_INVALIDA = "Matrícula ou senha inválida."
 
 class ControleAcesso:
     # Construtor: começa sem usuários e sem ninguém logado
-    def _init_(self):
+    def __init__(self):
         self.usuarios = []
         self.sessoes = {}  # token → matrícula de quem está logado
 
@@ -57,3 +57,18 @@ class ControleAcesso:
             return False
         del self.sessoes[token]
         return True
+
+    # Troca os cargos de alguém; None se deu certo, ou o motivo da recusa
+    def mudar_papeis(self, quem, matricula, papeis):
+        if not quem.pode("mudar_papeis"):
+            return "Você não tem permissão para mudar papéis."
+        usuario = self.buscar(matricula)
+        if usuario is None:
+            return "Usuário não encontrado."
+        if len(papeis) == 0:
+            return "Escolha pelo menos um papel."
+        for p in papeis:
+            if p not in papeis_validos():
+                return "Papel inválido: " + p
+        usuario.papeis = papeis
+        return None
