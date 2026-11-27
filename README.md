@@ -11,3 +11,4 @@ Sistema de controle de estoque em Python, feito no SENAI.
 
 ## Como rodar os testes
 python -m testes.teste_controle_acesso
+python -m teste_solicitacao
