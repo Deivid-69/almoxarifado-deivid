@@ -73,3 +73,27 @@ class SolicitacaoCompra:
         self.status = ANDAMENTO[posicao + 1]
         self._registrar(usuario.matricula, "Etapa concluída")
         return None
+    # O almoxarifado cancela sempre; quem abriu só antes da aprovação
+    def cancelar(self, usuario, motivo):
+        if self.status in ENCERRADOS:
+            return "Esta solicitação já está encerrada."
+        if not usuario.pode("cancelar_pedido"):
+            if usuario.matricula != self.solicitante:
+                return "Só quem abriu ou o almoxarifado pode cancelar."
+            if self.status not in [AGUARDANDO, REPROVADO]:
+                return "Depois de aprovada, só o almoxarifado pode cancelar."
+        self.status = CANCELADO
+        self._registrar(usuario.matricula, motivo)
+        return None
+
+    # Devolve os dados do pedido em um dicionário
+    def para_dicionario(self):
+        return {
+            "numero": self.numero,
+            "unidade": self.unidade,
+            "solicitante": self.solicitante,
+            "supervisor": self.supervisor,
+            "status": self.status,
+            "itens": self.itens,
+            "historico": self.historico,
+        }
