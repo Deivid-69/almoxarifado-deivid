@@ -30,3 +30,30 @@ class ControleAcesso:
             return False
         self.usuarios.append(usuario)
         return True
+
+    # Confere matrícula, senha e situação; devolve um token ou None
+    def entrar(self, matricula, senha):
+        usuario = self.buscar(matricula)
+        if usuario is None:
+            return None
+        if not usuario.conferir_senha(senha):
+            return None
+        if usuario.situacao != "ativo":
+            return None
+        token = secrets.token_hex(16)
+        self.sessoes[token] = matricula
+        return token
+
+    # Devolve o Usuario dono do token, ou None se o token não existe
+    def usuario_logado(self, token):
+        matricula = self.sessoes.get(token)
+        if matricula is None:
+            return None
+        return self.buscar(matricula)
+
+    # Apaga o token; True se existia, False se não existia
+    def sair(self, token):
+        if token not in self.sessoes:
+            return False
+        del self.sessoes[token]
+        return True
